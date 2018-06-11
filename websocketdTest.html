@@ -1,26 +1,43 @@
+
 <!DOCTYPE html>
-<head>
-<title>websocketd test</title>
-</head>
-<body>
-<pre id="log"></pre>
-<script>
-  // helper function: log message to screen
-  function log(msg) {
-        document.getElementById('log').textContent += msg + '\n';
-          }
-  // setup websocket with callbacks
-  var ws = new WebSocket('ws://localhost:8080/');
-    ws.onopen = function() {
-          log('CONNECT');
-            };
-  ws.onclose = function() {
-        log('DISCONNECT');
-          };
-  ws.onmessage = function(event) {
-        log('MESSAGE: ' + event.data);
-          };
+<html>
+  <head>
+    <title>websocketd count example</title>
+    <style>
+      #count {
+        font: bold 150px arial;
+        margin: auto;
+        padding: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="count"></div>
+	<input type="text" id="msgInput">
+	<input type="button" id="msgSubmit" value="send">
+    <script>
+      var ws = new WebSocket('ws://' + (location.host ? location.host : "localhost:8080") + "/");
+      ws.onopen = function() {
+        document.body.style.backgroundColor = '#cfc';
+      };
+      ws.onclose = function() {
+        document.body.style.backgroundColor = null;
+      };
+      ws.onmessage = function(event) {
+        document.getElementById('count').textContent = event.data;
+      };
 
 
-</script>
-</body>
+      let btnSend = document.getElementById("msgSubmit");
+      btnSend.onclick = function(){
+      	let str = document.getElementById("msgInput").value;
+
+      	ws.send(str);
+      }
+
+    </script>
+
+  </body>
+</html>
